@@ -1,0 +1,93 @@
+@using web_quanao.Helpers
+@{
+    ViewBag.Title = "Dashboard";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+<div class="row g-3">
+    <div class="col-md-3">
+        <div class="card text-bg-primary"><div class="card-body">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <div class="fs-6">T?ng doanh thu</div>
+                    <div class="fs-4 fw-bold">@Html.Price((decimal)ViewBag.TotalRevenue)</div>
+                </div>
+                <i class="bi bi-currency-exchange fs-1"></i>
+            </div>
+        </div></div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-bg-success"><div class="card-body">
+            <div class="fs-6">T?ng ??n hàng</div>
+            <div class="fs-4 fw-bold">@ViewBag.TotalOrders</div>
+        </div></div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-bg-info"><div class="card-body">
+            <div class="fs-6">T?ng user</div>
+            <div class="fs-4 fw-bold">@ViewBag.TotalUsers</div>
+        </div></div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-bg-warning"><div class="card-body">
+            <div class="fs-6">T?ng s?n ph?m</div>
+            <div class="fs-4 fw-bold">@ViewBag.TotalProducts</div>
+        </div></div>
+    </div>
+</div>
+
+<div class="card mt-4">
+    <div class="card-header">Bi?u ?? doanh thu 7 ngày</div>
+    <div class="card-body">
+        <canvas id="revenueChart" height="110"></canvas>
+    </div>
+</div>
+
+<div class="card mt-4">
+    <div class="card-header">??n hàng m?i nh?t</div>
+    <div class="card-body p-0">
+        <table class="table table-hover mb-0">
+            <thead>
+                <tr>
+                    <th>Mã</th>
+                    <th>UserId</th>
+                    <th>T?ng ti?n</th>
+                    <th>Tr?ng thái</th>
+                    <th>Ngày t?o</th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach (var o in (System.Collections.Generic.IEnumerable<web_quanao.Models.Order>)ViewBag.LatestOrders)
+            {
+                <tr>
+                    <td>@o.OrderId</td>
+                    <td>@o.UserId</td>
+                    <td>@Html.Price(o.TotalAmount)</td>
+                    <td>@o.Status</td>
+                    <td>@o.CreatedAt</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section Scripts{
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script>
+    const ctx = document.getElementById('revenueChart');
+    const chart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: [@Html.Raw(ViewBag.ChartLabels)],
+            datasets: [{
+                label: 'Doanh thu',
+                data: [@Html.Raw(ViewBag.ChartData)],
+                borderColor: 'rgba(75,192,192,1)',
+                backgroundColor: 'rgba(75,192,192,0.2)',
+                tension: .3,
+                fill: true
+            }]
+        }
+    });
+</script>
+}

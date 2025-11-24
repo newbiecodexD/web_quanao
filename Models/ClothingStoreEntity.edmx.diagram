@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="95031a602fd6492487c714232c4c16c6" Name="Diagram1">
+        <EntityTypeShape EntityType="ClothingStoreDBModel.Category" Width="1.5" PointX="0.75" PointY="5.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="ClothingStoreDBModel.OrderItem" Width="1.5" PointX="5.25" PointY="4.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="ClothingStoreDBModel.Order" Width="1.5" PointX="3" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="ClothingStoreDBModel.ProductImage" Width="1.5" PointX="5.25" PointY="8.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="ClothingStoreDBModel.Product" Width="1.5" PointX="3" PointY="4.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="ClothingStoreDBModel.ProductSize" Width="1.5" PointX="8.25" PointY="5.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="ClothingStoreDBModel.Size" Width="1.5" PointX="3" PointY="8.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="ClothingStoreDBModel.User" Width="1.5" PointX="0.75" PointY="2" IsExpanded="true" />
+        <AssociationConnector Association="ClothingStoreDBModel.FK__Products__Catego__403A8C7D" ManuallyRouted="false" />
+        <AssociationConnector Association="ClothingStoreDBModel.FK__OrderItem__Order__52593CB8" ManuallyRouted="false" />
+        <AssociationConnector Association="ClothingStoreDBModel.FK__OrderItem__Produ__534D60F1" ManuallyRouted="false" />
+        <AssociationConnector Association="ClothingStoreDBModel.FK__OrderItem__SizeI__5441852A" ManuallyRouted="false" />
+        <AssociationConnector Association="ClothingStoreDBModel.FK__Orders__UserId__4F7CD00D" ManuallyRouted="false" />
+        <AssociationConnector Association="ClothingStoreDBModel.FK__ProductIm__Produ__440B1D61" ManuallyRouted="false" />
+        <AssociationConnector Association="ClothingStoreDBModel.FK__ProductSi__Produ__49C3F6B7" ManuallyRouted="false" />
+        <AssociationConnector Association="ClothingStoreDBModel.FK__ProductSi__SizeI__4AB81AF0" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

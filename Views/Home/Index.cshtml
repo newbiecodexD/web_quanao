@@ -1,0 +1,105 @@
+﻿@model IEnumerable<web_quanao.Models.ProductViewModel>
+@{
+    ViewBag.Title = "Trang chủ";
+    Layout = "~/Views/Shared/_LayoutHome.cshtml";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="@Url.Content("~/Content/HomeCSS/index.css")" />
+}
+
+@section Banner {
+    <div class="home-hero">
+        <div class="overlay text-center">
+            <h1 class="display-4">UNIQLO</h1>
+            <p class="lead">Thời trang đơn giản - Chất lượng - Thoải mái mỗi ngày</p>
+            @if (!Request.IsAuthenticated)
+            {
+                <p>
+                    <a href="@Url.Action("Register", "Account")" class="btn btn-primary btn-lg me-2">Bắt đầu ngay</a>
+                    <a href="@Url.Action("Login", "Account")" class="btn btn-outline-light btn-lg">Đăng nhập</a>
+                </p>
+            }
+            else
+            {
+                <p class="lead">Chào mừng bạn trở lại!</p>
+            }
+        </div>
+    </div>
+}
+
+@section Slideshow { }
+
+<div class="row">
+    <div class="col-lg-3">
+        <div class="card sticky-top" style="top: 20px;">
+            <div class="card-header"><h5 class="mb-0">Bộ lọc & Tìm kiếm</h5></div>
+            <div class="card-body">
+                @using (Html.BeginForm("FilterProducts", "Home", FormMethod.Post, new { id = "filterForm", @class = "js-submit" }))
+                {
+                    @Html.AntiForgeryToken()
+                    <div class="mb-3">
+                        <label class="form-label">Từ khóa</label>
+                        <input type="text" class="form-control" name="q" placeholder="Tên hoặc mô tả" />
+                    </div>
+                    <div class="mb-4">
+                        <h6>Giới tính</h6>
+                        <div class="form-check"><input class="form-check-input" type="radio" name="gender" id="genderAny" value="Any" checked><label class="form-check-label" for="genderAny">Tất cả</label></div>
+                        <div class="form-check"><input class="form-check-input" type="radio" name="gender" id="genderMale" value="Nam"><label class="form-check-label" for="genderMale">Nam</label></div>
+                        <div class="form-check"><input class="form-check-input" type="radio" name="gender" id="genderFemale" value="Nữ"><label class="form-check-label" for="genderFemale">Nữ</label></div>
+                        <div class="form-check"><input class="form-check-input" type="radio" name="gender" id="genderUnisex" value="Unisex"><label class="form-check-label" for="genderUnisex">Unisex</label></div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Loại sản phẩm</label>
+                        @Html.DropDownList("categoryId", (IEnumerable<SelectListItem>)ViewBag.Categories, "-- Tất cả --", new { @class = "form-select" })
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Khoảng giá</label>
+                        <div class="row g-2">
+                            <div class="col-6"><input type="number" step="1000" min="0" class="form-control" name="minPrice" placeholder="Từ" /></div>
+                            <div class="col-6"><input type="number" step="1000" min="0" class="form-control" name="maxPrice" placeholder="Đến" /></div>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-dark w-100" data-loading><i class="bi bi-funnel me-1"></i> Lọc hoặc tìm kiếm</button>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-9" id="productListContainer">
+        @Html.Partial("_ProductList", Model)
+        <div id="noResultsMessage" class="col-12 text-center" style="display: none;">
+            <p class="fs-4 text-muted">Không tìm thấy sản phẩm phù hợp.</p>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @using (Html.BeginForm("","",FormMethod.Post, new { id = "__AjaxAntiForgeryForm" })) { @Html.AntiForgeryToken() }
+    <script>
+    (function(){
+        var form = document.getElementById('filterForm');
+        var container = document.getElementById('productListContainer');
+        function getToken(){
+            var token = document.querySelector('#__AjaxAntiForgeryForm input[name="__RequestVerificationToken"]').value;
+            return token;
+        }
+        form.addEventListener('submit', function(e){
+            e.preventDefault();
+            window.AppLoader && AppLoader.show();
+            var data = new FormData(form);
+            fetch('@Url.Action("FilterProducts","Home")',{
+                method:'POST',
+                headers: { 'X-Requested-With': 'XMLHttpRequest', 'RequestVerificationToken': getToken() },
+                body: data
+            })
+            .then(r=>{ if(!r.ok) throw new Error('Lỗi mạng'); return r.text(); })
+            .then(html=>{
+                container.innerHTML = html;
+            })
+            .catch(err=>{ console.error(err); alert('Không thể tải dữ liệu.'); })
+            .finally(()=>{ window.AppLoader && setTimeout(AppLoader.hide, 400); });
+        });
+    })();
+    </script>
+}

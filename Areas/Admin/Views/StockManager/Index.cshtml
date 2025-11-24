@@ -1,0 +1,33 @@
+@model IEnumerable<web_quanao.Models.ProductSize>
+@{
+    ViewBag.Title = "Stock Manager";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+<div class="row mb-3">
+    <div class="col-md-6">
+        @using (Html.BeginForm("Index","StockManager",FormMethod.Get)){
+            @Html.DropDownList("productId", (SelectList)ViewBag.Products, "-- Ch?n s?n ph?m --", new { @class = "form-select d-inline-block", onchange = "this.form.submit()", style = "max-width:320px;" })
+        }
+    </div>
+</div>
+<table class="table table-bordered table-striped">
+    <thead><tr><th>Product</th><th>Size</th><th>Stock</th><th></th></tr></thead>
+    <tbody>
+    @foreach (var ps in Model){
+        <tr>
+            <td>@ps.Product?.Name (@ps.ProductId)</td>
+            <td>@ps.Size?.SizeName</td>
+            <td>@ps.Stock</td>
+            <td>
+                @using (Html.BeginForm("Update","StockManager",FormMethod.Post)){
+                    @Html.AntiForgeryToken()
+                    @Html.Hidden("productId", ps.ProductId)
+                    @Html.Hidden("sizeId", ps.SizeId)
+                    <input type="number" name="stock" value="@ps.Stock" min="0" class="form-control d-inline-block" style="width:120px" />
+                    <button class="btn btn-sm btn-primary" type="submit">C?p nh?t</button>
+                }
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>

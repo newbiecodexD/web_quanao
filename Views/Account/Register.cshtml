@@ -1,0 +1,53 @@
+﻿@model web_quanao.Models.RegisterViewModel
+@{
+    ViewBag.Title = "Đăng ký";
+    Layout = "~/Views/Shared/_LayoutHome.cshtml"; // sử dụng layout chung để dễ căn giữa
+}
+
+@section Styles{
+<style>
+    .register-wrapper { min-height:70vh; display:flex; align-items:center; justify-content:center; }
+    .register-card { width:100%; max-width:420px; background:#ffffff; border:1px solid #e5e5e5; border-radius:12px; padding:2rem 2.25rem; box-shadow:0 8px 24px -6px rgba(0,0,0,.08); }
+    .register-card h2 { font-size:1.4rem; font-weight:600; margin-bottom:1.25rem; text-align:center; }
+    .form-floating label{ font-size:.85rem; }
+    .already-link { margin-left:.75rem; }
+</style>
+}
+
+<div class="register-wrapper">
+    <div class="register-card">
+        <h2>Tạo tài khoản mới</h2>
+        @if(TempData["RegisterSuccess"] != null){
+            <div class="alert alert-success text-center">Tạo tài khoản thành công! Bạn đã được đăng nhập.</div>
+            <script>
+            setTimeout(function(){ window.location='@Url.Action("Login","Account")'; }, 1000);
+            </script>
+        }
+        @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { role = "form", @class="js-submit" }))
+        {
+            @Html.AntiForgeryToken()
+            @Html.ValidationSummary("", new { @class = "text-danger" })
+            <div class="form-floating mb-3">
+                @Html.TextBoxFor(m => m.Email, new { @class = "form-control", placeholder = "Email" })
+                @Html.LabelFor(m => m.Email, "Email")
+            </div>
+            <div class="form-floating mb-3">
+                @Html.PasswordFor(m => m.Password, new { @class = "form-control", placeholder = "Mật khẩu" })
+                @Html.LabelFor(m => m.Password, "Mật khẩu")
+            </div>
+            <div class="form-floating mb-4">
+                @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control", placeholder = "Xác nhận mật khẩu" })
+                @Html.LabelFor(m => m.ConfirmPassword, "Xác nhận mật khẩu")
+            </div>
+            <div class="d-flex align-items-center justify-content-center mb-2">
+                <button type="submit" class="btn btn-primary px-4" data-loading>Đăng ký</button>
+                <a href="@Url.Action("Login","Account")" class="small text-decoration-none already-link">Đã có tài khoản?</a>
+            </div>
+            <p class="text-muted small text-center mb-0">Mật khẩu tối thiểu 6 ký tự bao gồm chữ hoa, chữ thường, số và ký tự đặc biệt.</p>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

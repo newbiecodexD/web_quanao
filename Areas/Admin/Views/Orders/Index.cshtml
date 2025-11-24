@@ -1,0 +1,20 @@
+@model IEnumerable<web_quanao.Models.Order>
+@{
+    ViewBag.Title = "Orders";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+<table class="table table-bordered table-striped">
+    <thead><tr><th>ID</th><th>UserId</th><th>Total</th><th>Status</th><th>Created</th><th></th></tr></thead>
+    <tbody>
+    @foreach (var o in Model){
+        <tr>
+            <td>@o.OrderId</td>
+            <td>@o.UserId</td>
+            <td>@o.TotalAmount</td>
+            <td>@o.Status</td>
+            <td>@o.CreatedAt</td>
+            <td><a class="btn btn-sm btn-info" href="@Url.Action("Details", new { id = o.OrderId })">Chi ti?t</a></td>
+        </tr>
+    }
+    </tbody>
+</table>

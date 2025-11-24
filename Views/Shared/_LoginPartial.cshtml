@@ -1,0 +1,90 @@
+﻿@using Microsoft.AspNet.Identity
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+@* CSS để kích hoạt dropdown khi hover và tạo hiệu ứng hiện đại *@
+<style>
+    /* Chỉ áp dụng cho màn hình desktop trở lên */
+    @@media (min-width: 992px) {
+        .dropdown-hover:hover .dropdown-menu {
+            display: block;
+            margin-top: 0;
+        }
+    }
+
+    /* Tạo hiệu ứng cho dropdown menu */
+    .dropdown-menu {
+        border-radius: 0.5rem; /* Bo góc */
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15); /* Bóng đổ nhẹ */
+        border: none;
+    }
+
+    .dropdown-item {
+        transition: all 0.2s ease-in-out;
+        border-radius: 0.3rem;
+        margin: 0.2rem 0.5rem;
+    }
+
+        .dropdown-item:hover,
+        .dropdown-item:focus {
+            background-color: #f8f9fa; /* Màu nền nhẹ khi hover */
+            transform: translateY(-1px); /* Hiệu ứng dịch chuyển nhẹ */
+        }
+</style>
+
+<ul class="navbar-nav ms-auto">
+    <li class="nav-item me-2">
+        <a href="@Url.Action("Index","Cart")" class="nav-link" title="Giỏ hàng">
+            <i class="bi bi-cart-fill" style="font-size:1.4rem;"></i>
+        </a>
+    </li>
+    <li class="nav-item dropdown dropdown-hover">
+        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" title="Tài khoản">
+            <i class="bi bi-person-circle" style="font-size:1.4rem;"></i>
+        </a>
+        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+            @if (Request.IsAuthenticated)
+            {
+                <li>
+                    <span class="dropdown-item disabled text-muted">
+                        <i class="bi bi-person me-2"></i>
+                        Xin chào @User.Identity.GetUserName()!
+                    </span>
+                </li>
+                <li><hr class="dropdown-divider"></li>
+                <li>
+                    <a href="@Url.Action("Index", "Manage")" class="dropdown-item d-flex align-items-center" title="Quản lý tài khoản">
+                        <i class="bi bi-gear me-2"></i>
+                        Quản lý tài khoản
+                    </a>
+                </li>
+                <li><hr class="dropdown-divider"></li>
+                <li>
+                    @using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        <a class="dropdown-item d-flex align-items-center" href="javascript:document.getElementById('logoutForm').submit()" title="Đăng xuất">
+                            <i class="bi bi-box-arrow-right me-2"></i>
+                            Đăng xuất
+                        </a>
+                    }
+                </li>
+            }
+            else
+            {
+                <li>
+                    <a href="@Url.Action("Register", "Account")" id="registerLink" class="dropdown-item d-flex align-items-center" title="Đăng ký">
+                        <i class="bi bi-person-plus me-2"></i>
+                        Đăng ký
+                    </a>
+                </li>
+                <li><hr class="dropdown-divider"></li>
+                <li>
+                    <a href="@Url.Action("Login", "Account")" id="loginLink" class="dropdown-item d-flex align-items-center" title="Đăng nhập">
+                        <i class="bi bi-box-arrow-in-right me-2"></i>
+                        Đăng nhập
+                    </a>
+                </li>
+            }
+        </ul>
+    </li>
+</ul>

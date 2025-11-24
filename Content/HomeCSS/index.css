@@ -1,0 +1,13 @@
+/* CSS tách t? Views/Home/Index.cshtml */
+.home-hero{position:relative;height:60vh;background-image:url('https://mir-s3-cdn-cf.behance.net/projects/404/bd2d41219750379.Y3JvcCwxMzgwLDEwODAsMjcwLDA.jpg');background-size:cover;background-position:center;color:#fff}
+.overlay{position:absolute;top:0;left:0;right:0;bottom:0;background-color:rgba(0,0,0,.5);display:flex;flex-direction:column;justify-content:center;align-items:center}
+.lead{font-size:1.5rem;font-weight:300;max-width:700px;margin:auto auto 1.5rem auto;color:rgba(255,255,255,.95);text-shadow:1px 1px 5px rgba(0,0,0,.8)}
+.slide-show{position:relative;overflow:hidden;border-radius:10px;max-width:100%;margin:auto;padding:20px 0}
+.slide-track{display:flex;gap:15px;width:max-content;animation:slide-scroll 30s linear infinite}
+.slide-show:hover .slide-track{animation-play-state:paused}
+.slide-item{transition:transform .3s ease-in-out}
+.slide-item:hover{transform:scale(1.05);z-index:10;cursor:pointer}
+.slide-item img{height:200px;width:auto;display:block;border-radius:5px}
+@keyframes slide-scroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+/* Sidebar filter tweaks */
+.sticky-top{top:20px}

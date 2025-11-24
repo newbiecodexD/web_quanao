@@ -1,0 +1,26 @@
+﻿/* Các style cụ thể cho các trang quản lý trong khu vực Admin */
+
+/* Cải thiện hiệu ứng khi focus vào input */
+.form-control:focus {
+    border-color: #86b7fe;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+/* Làm nổi bật hơn các thông báo lỗi xác thực */
+.field-validation-error {
+    color: #dc3545;
+    font-size: 0.875em;
+    font-weight: 500;
+    display: block;
+    margin-top: 4px;
+}
+
+/* Thêm khoảng cách cho các nút hành động cuối form */
+.form-actions {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid #dee2e6;
+    display: flex;
+    justify-content: flex-end; /* Căn các nút về bên phải */
+    gap: 10px; /* Tạo khoảng cách giữa các nút */
+}

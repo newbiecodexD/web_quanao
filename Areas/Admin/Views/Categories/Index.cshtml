@@ -1,0 +1,24 @@
+@model IEnumerable<web_quanao.Models.Category>
+@{
+    ViewBag.Title = "Categories";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+<p><a class="btn btn-primary" href="@Url.Action("Create")">Thêm danh m?c</a></p>
+<table class="table table-bordered table-striped">
+    <thead><tr><th>ID</th><th>Name</th><th>Description</th><th>CreatedAt</th><th></th></tr></thead>
+    <tbody>
+    @foreach (var c in Model){
+        <tr>
+            <td>@c.CategoryId</td>
+            <td>@c.Name</td>
+            <td>@c.Description</td>
+            <td>@c.CreatedAt</td>
+            <td>
+                <a class="btn btn-sm btn-secondary" href="@Url.Action("Edit", new { id = c.CategoryId })">S?a</a>
+                <a class="btn btn-sm btn-info" href="@Url.Action("Details", new { id = c.CategoryId })">Chi ti?t</a>
+                <a class="btn btn-sm btn-danger" href="@Url.Action("Delete", new { id = c.CategoryId })">Xóa</a>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>

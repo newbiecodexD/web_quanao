@@ -1,0 +1,21 @@
+@model web_quanao.ViewModels.CategoryFormViewModel
+@{
+    ViewBag.Title = "Edit Category";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+@using (Html.BeginForm()){
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(m => m.CategoryId)
+    <div class="mb-3">
+        @Html.LabelFor(m => m.Name)
+        @Html.TextBoxFor(m => m.Name, new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.Name)
+    </div>
+    <div class="mb-3">
+        @Html.LabelFor(m => m.Description)
+        @Html.TextAreaFor(m => m.Description, 4, 60, new { @class = "form-control" })
+    </div>
+    <button class="btn btn-primary">L?u</button>
+    <a class="btn btn-secondary" href="@Url.Action("Index")">H?y</a>
+}
+@section Scripts{ @Scripts.Render("~/bundles/jqueryval") }

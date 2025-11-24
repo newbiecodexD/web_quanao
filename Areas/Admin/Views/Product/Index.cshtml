@@ -1,0 +1,46 @@
+﻿@model IEnumerable<web_quanao.Areas.Admin.Controllers.ProductController.ProductVm>
+@{
+    ViewBag.Title = "Sản phẩm";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h1 class="h3 mb-3">Danh sách sản phẩm</h1>
+
+@if (TempData["Msg"] != null)
+{
+    <div class="alert alert-success">@TempData["Msg"]</div>
+}
+
+<div class="card">
+    <div class="card-header">
+        <a class="btn btn-primary" href="@Url.Action("Create")">Thêm sản phẩm mới</a>
+    </div>
+    <div class="card-body">
+        <table class="table table-striped table-bordered align-middle">
+            <thead class="table-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>Tên sản phẩm</th>
+                    <th>Giá (VNĐ)</th>
+                    <th>Số lượng</th>
+                    <th style="width:140px;">Hành động</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var p in Model)
+                {
+                    <tr>
+                        <td>@p.ProductID</td>
+                        <td>@p.Name</td>
+                        <td>@string.Format("{0:N0}", p.Cost)</td>
+                        <td>@p.Quantity</td>
+                        <td>
+                            <a class="btn btn-sm btn-warning" href="@Url.Action("Edit", new { id = p.ProductID })">Sửa</a>
+                            <a class="btn btn-sm btn-danger" href="@Url.Action("Delete", new { id = p.ProductID })">Xóa</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

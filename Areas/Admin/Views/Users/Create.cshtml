@@ -1,0 +1,30 @@
+@model web_quanao.ViewModels.UserFormViewModel
+@{
+    ViewBag.Title = "Create User";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+@using (Html.BeginForm()){
+    @Html.AntiForgeryToken()
+    <div class="mb-3">
+        @Html.LabelFor(m => m.FullName)
+        @Html.TextBoxFor(m => m.FullName, new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.FullName)
+    </div>
+    <div class="mb-3">
+        @Html.LabelFor(m => m.Email)
+        @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.Email)
+    </div>
+    <div class="mb-3">
+        @Html.LabelFor(m => m.Role)
+        @Html.DropDownListFor(m => m.Role, new SelectList(new[]{"Admin","Customer"}), "--Select--", new { @class = "form-select" })
+        @Html.ValidationMessageFor(m => m.Role)
+    </div>
+    <div class="mb-3">
+        @Html.LabelFor(m => m.CreatedAt)
+        @Html.TextBoxFor(m => m.CreatedAt, new { @class = "form-control", @readonly = "readonly" })
+    </div>
+    <button class="btn btn-primary">L?u</button>
+    <a class="btn btn-secondary" href="@Url.Action("Index")">H?y</a>
+}
+@section Scripts{ @Scripts.Render("~/bundles/jqueryval") }

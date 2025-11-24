@@ -1,0 +1,26 @@
+﻿@model web_quanao.Areas.Admin.Controllers.ProductController.ProductVm
+@{
+    ViewBag.Title = "Xóa sản phẩm";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h1 class="h3 mb-3 text-danger">Xác nhận xóa sản phẩm</h1>
+
+<div class="card">
+    <div class="card-body">
+        <div class="alert alert-warning">
+            Bạn có chắc muốn xóa sản phẩm: <strong>@Model.Name</strong> (ID: @Model.ProductID)?
+            <br />
+            Hành động này không thể hoàn tác.
+        </div>
+
+        @using (Html.BeginForm("Delete", "Product", FormMethod.Post, new { @class = "mt-3" }))
+        {
+            @Html.AntiForgeryToken()
+            @Html.HiddenFor(m => m.ProductID)
+
+            <button type="submit" class="btn btn-danger">Xóa</button>
+            <a href="@Url.Action("Index")" class="btn btn-secondary">Hủy</a>
+        }
+    </div>
+</div>

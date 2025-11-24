@@ -1,0 +1,24 @@
+﻿/* Primary theme: red & white */
+:root {
+    --primary-red:#c40000;
+    --primary-red-hover:#a70000;
+    --light-bg:#ffffff;
+    --soft-gray:#f5f5f5;
+}
+
+body { background-color: var(--soft-gray); }
+.navbar, footer { background-color: var(--primary-red) !important; }
+.navbar a.nav-link, .navbar-brand span, footer, footer a { color:#fff !important; }
+.navbar a.nav-link:hover { text-decoration: underline; }
+.btn-primary { background: var(--primary-red); border-color: var(--primary-red); }
+.btn-primary:hover { background: var(--primary-red-hover); border-color: var(--primary-red-hover); }
+
+/* Existing content spacing */
+.body-content { margin-top: 15px; padding-left: 15px; padding-right: 15px; }
+html, body { height:100%; }
+.main-wrapper { min-height:100vh; }
+body.home-bg { min-height:100%; background: url('/Content/Images/background_homepage.jpg') center center/cover no-repeat fixed; }
+.home-hero { min-height: 80vh; display:flex; align-items:center; justify-content:center; color:#fff; text-shadow:0 1px 3px rgba(0,0,0,0.6); }
+.home-hero .overlay { background: rgba(0,0,0,0.45); padding:60px 40px; border-radius:8px; }
+.dl-horizontal dt { white-space: normal; }
+input, select, textarea { max-width:280px; }

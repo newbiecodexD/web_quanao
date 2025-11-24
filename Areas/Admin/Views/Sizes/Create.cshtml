@@ -1,0 +1,14 @@
+@model web_quanao.Models.Size
+@{
+    ViewBag.Title = "Create Size";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+@using (Html.BeginForm()){
+    @Html.AntiForgeryToken()
+    <div class="mb-3">
+        @Html.LabelFor(m => m.SizeName)
+        @Html.TextBoxFor(m => m.SizeName, new { @class = "form-control" })
+    </div>
+    <button class="btn btn-primary">L?u</button>
+    <a class="btn btn-secondary" href="@Url.Action("Index")">H?y</a>
+}
