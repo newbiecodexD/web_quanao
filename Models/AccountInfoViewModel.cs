@@ -2,9 +2,10 @@ using System.ComponentModel.DataAnnotations;
 
 namespace web_quanao.Models
 {
-    public class ManageAccountViewModel
+    public class AccountInfoViewModel
     {
         [Display(Name = "Email")]
+        [EmailAddress]
         public string Email { get; set; }
 
         [Display(Name = "??a ch? nh?n hàng")]

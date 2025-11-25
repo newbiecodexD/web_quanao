@@ -1,19 +1,33 @@
-@model IEnumerable<web_quanao.Models.Order>
+﻿@model IEnumerable<dynamic>
 @{
-    ViewBag.Title = "Orders";
+    ViewBag.Title = "Đơn hàng";
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
-<table class="table table-bordered table-striped">
-    <thead><tr><th>ID</th><th>UserId</th><th>Total</th><th>Status</th><th>Created</th><th></th></tr></thead>
+<h2 class="mb-3">Danh sách đơn hàng</h2>
+<table class="table table-bordered table-sm align-middle">
+    <thead class="table-light">
+        <tr>
+            <th>ID</th>
+            <th>Ngày</th>
+            <th>Khách</th>
+            <th>Trạng thái</th>
+            <th>Tổng tiền</th>
+            <th></th>
+        </tr>
+    </thead>
     <tbody>
-    @foreach (var o in Model){
+    @foreach(var o in Model){
         <tr>
             <td>@o.OrderId</td>
-            <td>@o.UserId</td>
-            <td>@o.TotalAmount</td>
+            <td>@o.OrderDate.ToString("dd/MM/yyyy HH:mm")</td>
+            <td>@(o.CustomerName ?? "-")</td>
             <td>@o.Status</td>
-            <td>@o.CreatedAt</td>
-            <td><a class="btn btn-sm btn-info" href="@Url.Action("Details", new { id = o.OrderId })">Chi ti?t</a></td>
+            <td>@String.Format("{0:N0} VND", o.TotalAmount)</td>
+            <td>
+                <a class="btn btn-sm btn-info" href="@Url.Action("Details","Orders", new { area="Admin", id = o.OrderId })">Chi tiết</a>
+                <a class="btn btn-sm btn-secondary" href="@Url.Action("Edit","Orders", new { area="Admin", id = o.OrderId })">Sửa</a>
+                <a class="btn btn-sm btn-danger" href="@Url.Action("Delete","Orders", new { area="Admin", id = o.OrderId })" onclick="return confirm('Xóa đơn hàng?');">Xóa</a>
+            </td>
         </tr>
     }
     </tbody>

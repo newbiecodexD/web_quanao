@@ -1,9 +1,28 @@
 ﻿@{
-    ViewBag.Title = "About";
+    ViewBag.Title = "Về website";
+    Layout = "~/Views/Shared/_LayoutHome.cshtml";
 }
-<main aria-labelledby="title">
-    <h2 id="title">@ViewBag.Title.</h2>
-    <h3>@ViewBag.Message</h3>
-
-    <p>Use this area to provide additional information.</p>
+<main class="container py-4" aria-labelledby="title">
+    <h2 id="title" class="mb-3">@ViewBag.Title</h2>
+    <p class="lead">Nền tảng bán quần áo UNIQLO demo.</p>
+    <h5>Công nghệ sử dụng</h5>
+    <ul>
+        <li>.NET Framework 4.7.2 (MVC)</li>
+        <li>Entity Framework Database-First</li>
+        <li>Bootstrap 5 + Bootstrap Icons</li>
+        <li>jQuery cho AJAX & thao tác giao diện</li>
+        <li>LocalStorage đồng bộ tạm giỏ hàng -> DB</li>
+        <li>Identity PasswordHasher cho mã hóa mật khẩu</li>
+        <li>QR thanh toán demo (api.qrserver.com)</li>
+    </ul>
+    <h5>Luồng chính</h5>
+    <ol>
+        <li>Khách truy cập trang chủ xem sản phẩm.</li>
+        <li>Thêm sản phẩm vào LocalStorage giỏ hàng (ẩn danh).</li>
+        <li>Sau đăng nhập: giỏ LocalStorage được sync vào DB.</li>
+        <li>Giỏ hàng (Cart) CRUD trực tiếp trên DB khi đã đăng nhập.</li>
+        <li>Thanh toán tạo Order + OrderItems, xóa cart items.</li>
+        <li>Quản lý tài khoản: đổi mật khẩu, xem email.</li>
+    </ol>
+    <p class="mt-4">Mã nguồn & liên hệ ở trang Liên hệ.</p>
 </main>

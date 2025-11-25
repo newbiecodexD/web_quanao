@@ -1,12 +1,12 @@
 ﻿@model web_quanao.Models.RegisterViewModel
 @{
     ViewBag.Title = "Đăng ký";
-    Layout = "~/Views/Shared/_LayoutHome.cshtml"; // sử dụng layout chung để dễ căn giữa
+    Layout = "~/Views/Shared/_LayoutAuth.cshtml"; 
 }
 
 @section Styles{
 <style>
-    .register-wrapper { min-height:70vh; display:flex; align-items:center; justify-content:center; }
+    .register-wrapper { min-height:60vh; display:flex; align-items:center; justify-content:center; }
     .register-card { width:100%; max-width:420px; background:#ffffff; border:1px solid #e5e5e5; border-radius:12px; padding:2rem 2.25rem; box-shadow:0 8px 24px -6px rgba(0,0,0,.08); }
     .register-card h2 { font-size:1.4rem; font-weight:600; margin-bottom:1.25rem; text-align:center; }
     .form-floating label{ font-size:.85rem; }
@@ -19,9 +19,7 @@
         <h2>Tạo tài khoản mới</h2>
         @if(TempData["RegisterSuccess"] != null){
             <div class="alert alert-success text-center">Tạo tài khoản thành công! Bạn đã được đăng nhập.</div>
-            <script>
-            setTimeout(function(){ window.location='@Url.Action("Login","Account")'; }, 1000);
-            </script>
+            <script>setTimeout(function(){ window.location='@Url.Action("Login","Account")'; }, 1000);</script>
         }
         @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { role = "form", @class="js-submit" }))
         {
@@ -48,6 +46,4 @@
     </div>
 </div>
 
-@section Scripts {
-    @Scripts.Render("~/bundles/jqueryval")
-}
+@section Scripts { @Scripts.Render("~/bundles/jqueryval") }

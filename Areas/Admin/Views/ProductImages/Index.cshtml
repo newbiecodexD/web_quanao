@@ -1,19 +1,19 @@
-@model IEnumerable<web_quanao.Models.ProductImage>
+﻿@model IEnumerable<web_quanao.Models.ProductImage>
 @{
-    ViewBag.Title = "Product Images";
+    ViewBag.Title = "Hình ảnh sản phẩm";
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
 <table class="table table-bordered table-striped">
-    <thead><tr><th>ID</th><th>ProductId</th><th>Image</th><th>Primary</th><th></th></tr></thead>
+    <thead><tr><th>ID</th><th>ID sản phẩm</th><th>Ảnh</th><th>Chính</th><th></th></tr></thead>
     <tbody>
     @foreach (var i in Model){
         <tr>
             <td>@i.ImageId</td>
             <td>@i.ProductId</td>
             <td><img src="@Url.Content(i.ImageUrl)" style="height:60px" class="img-thumbnail"/></td>
-            <td>@i.IsPrimary</td>
+            <td>@(i.IsPrimary ? "Có" : "Không")</td>
             <td>
-                <a class="btn btn-sm btn-danger" href="@Url.Action("Delete", new { id = i.ImageId })">X�a</a>
+                <a class="btn btn-sm btn-danger" href="@Url.Action("Delete", new { id = i.ImageId })">Xóa</a>
             </td>
         </tr>
     }

@@ -1,12 +1,15 @@
+using System;
 using System.Data.Entity;
 using System.Linq;
 using System.Web.Mvc;
 using web_quanao.Infrastructure.Repositories;
 using web_quanao.Infrastructure.UnitOfWork;
 using web_quanao.Models;
+using System.Collections.Generic;
 
 namespace web_quanao.Areas.Admin.Controllers
 {
+    [Authorize]
     public class OrdersController : Controller
     {
         private readonly ClothingStoreDBEntities _db = new ClothingStoreDBEntities();
@@ -25,28 +28,60 @@ namespace web_quanao.Areas.Admin.Controllers
             _uow = new UnitOfWork(_db);
         }
 
+        private bool IsAdmin() { return (Session["IsAdmin"] as string) == "true"; }
+
+        public class AdminOrderRow
+        {
+            public int OrderId { get; set; }
+            public DateTime OrderDate { get; set; }
+            public decimal TotalAmount { get; set; }
+            public string Status { get; set; }
+            public string CustomerName { get; set; }
+        }
+        public class AdminOrderItemRow
+        {
+            public int DetailId { get; set; }
+            public int ProductId { get; set; }
+            public string ProductName { get; set; }
+            public int Quantity { get; set; }
+            public decimal UnitPrice { get; set; }
+            public decimal LineTotal => UnitPrice * Quantity;
+        }
+
         public ActionResult Index()
         {
-            var list = _orders.Query().Include(o => o.User).OrderByDescending(o => o.CreatedAt).ToList();
-            return View(list);
+            if (!IsAdmin()) return RedirectToAction("Login", "Account", new { area = "" });
+            var data = _db.Database.SqlQuery<AdminOrderRow>("SELECT o.OrderId, o.OrderDate, o.TotalAmount, o.Status, u.FullName AS CustomerName FROM OrderPro o LEFT JOIN Users u ON o.CustomerId = u.UserId ORDER BY o.OrderDate DESC").ToList();
+            return View(data);
         }
 
         public ActionResult Details(int id)
         {
-            var order = _orders.Query().Include(o => o.User).FirstOrDefault(o => o.OrderId == id);
+            if (!IsAdmin()) return RedirectToAction("Login", "Account", new { area = "" });
+            var order = _db.Database.SqlQuery<AdminOrderRow>("SELECT o.OrderId, o.OrderDate, o.TotalAmount, o.Status, u.FullName AS CustomerName FROM OrderPro o LEFT JOIN Users u ON o.CustomerId = u.UserId WHERE o.OrderId = @p0", id).FirstOrDefault();
             if (order == null) return HttpNotFound();
-            ViewBag.Items = _orderItems.Query().Include(i => i.Product).Include(i => i.Size).Where(i => i.OrderId == id).ToList();
+            var items = _db.Database.SqlQuery<AdminOrderItemRow>("SELECT d.DetailId, d.ProductId, d.ProductName, d.Quantity, d.UnitPrice FROM OrderDetail d WHERE d.OrderId = @p0", id).ToList();
+            ViewBag.Items = items;
             return View(order);
         }
 
-        [HttpPost, ValidateAntiForgeryToken]
-        public ActionResult UpdateStatus(int id, string status)
+        public ActionResult Delete(int id)
         {
-            var order = _orders.Get(id);
+            if (!IsAdmin()) return RedirectToAction("Login", "Account", new { area = "" });
+            var order = _db.Database.SqlQuery<AdminOrderRow>("SELECT o.OrderId, o.OrderDate, o.TotalAmount, o.Status, u.FullName AS CustomerName FROM OrderPro o LEFT JOIN Users u ON o.CustomerId = u.UserId WHERE o.OrderId = @p0", id).FirstOrDefault();
             if (order == null) return HttpNotFound();
-            order.Status = status;
-            _uow.Complete();
-            return RedirectToAction("Details", new { id });
+            return View(order);
+        }
+
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public ActionResult DeleteConfirmed(int id)
+        {
+            if (!IsAdmin()) return RedirectToAction("Login", "Account", new { area = "" });
+            _db.Database.ExecuteSqlCommand("DELETE FROM OrderDetail WHERE OrderId=@p0", id);
+            _db.Database.ExecuteSqlCommand("DELETE FROM OrderPro WHERE OrderId=@p0", id);
+            TempData["Msg"] = "?ã xóa ??n hàng";
+            return RedirectToAction("Index");
         }
     }
 }

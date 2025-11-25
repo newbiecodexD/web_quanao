@@ -4,9 +4,9 @@
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
 <h5>B?n ch?c ch?n mu?n xóa danh m?c: @Model.Name?</h5>
-@using (Html.BeginForm("Delete", "Categories", FormMethod.Post)){
+@using (Html.BeginForm("Delete", "Categories", FormMethod.Post, new { @class="js-submit" })){
     @Html.AntiForgeryToken()
     @Html.HiddenFor(m => m.CategoryId)
-    <a class="btn btn-secondary" href="@Url.Action("Index")">H?y</a>
-    <button class="btn btn-danger" type="submit">Xóa</button>
+    <a class="btn btn-secondary" href="@Url.Action("Index")" data-loading>H?y</a>
+    <button class="btn btn-danger" type="submit" data-loading>Xóa</button>
 }

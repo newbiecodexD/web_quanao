@@ -1,0 +1,60 @@
+﻿@model web_quanao.Models.CheckOutViewModel
+@{
+    ViewBag.Title = "Thanh toán";
+    Layout = "~/Views/Shared/_LayoutCart.cshtml";
+    var culture = new System.Globalization.CultureInfo("vi-VN");
+}
+<h2 class="mb-3">Thanh toán</h2>
+@if(Model.Items == null || !Model.Items.Any()){
+    <div class="alert alert-info">Giỏ hàng trống. <a href="@Url.Action("Index","Home")">Quay lại mua sắm</a>.</div>
+} else {
+    <table class="table table-bordered table-striped">
+        <thead class="table-light">
+            <tr><th>Mã SP</th><th>Tên sản phẩm</th><th>Số lượng</th><th>Đơn giá</th><th>Thành tiền</th></tr>
+        </thead>
+        <tbody>
+        @foreach(var item in Model.Items){
+            <tr>
+                <td>@item.idPro</td>
+                <td>@item.namePro</td>
+                <td>@item.quantity</td>
+                <td>@string.Format(culture, "{0:N0} VND", item.price)</td>
+                <td>@string.Format(culture, "{0:N0} VND", item.total)</td>
+            </tr>
+        }
+        </tbody>
+        <tfoot>
+            <tr><th colspan="4" class="text-end">Tổng cộng:</th><th>@string.Format(culture, "{0:N0} VND", Model.Total)</th></tr>
+        </tfoot>
+    </table>
+    @Html.AntiForgeryToken()
+    <div class="mb-3">
+        <label class="form-label">Địa chỉ giao hàng</label>
+        <input type="text" id="deliveryAddress" class="form-control" value="@Model.DeliveryAddress" placeholder="Nhập địa chỉ" />
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Phương thức thanh toán</label>
+        <select id="paymentMethod" class="form-select">
+            <option value="COD">Thanh toán khi nhận hàng (COD)</option>
+            <option value="BANK">Chuyển khoản ngân hàng</option>
+        </select>
+    </div>
+    <button type="button" id="btnPay" class="btn btn-primary">Xác nhận đặt hàng</button>
+    <a href="@Url.Action("Index","Cart")" class="btn btn-secondary ms-2">Quay lại giỏ hàng</a>
+}
+@section scripts{
+<script>
+(function(){
+    $('#btnPay').on('click', function(){
+        if(!confirm('Xác nhận tạo đơn hàng?')) return;
+        var token = $('input[name="__RequestVerificationToken"]').val();
+        var addr = $('#deliveryAddress').val();
+        var pm = $('#paymentMethod').val();
+        $.post('@Url.Action("CheckoutConfirm","Cart")',{ __RequestVerificationToken: token, deliveryAddress: addr, paymentMethod: pm }, function(r){
+            if(r && r.success){ alert('Đã tạo đơn hàng #'+ r.orderId); window.location='@Url.Action("History","Order")'; }
+            else { alert(r.message || 'Không thể tạo đơn hàng'); }
+        });
+    });
+})();
+</script>
+}

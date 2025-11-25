@@ -1,42 +1,59 @@
-﻿@model web_quanao.Models.ManageAccountViewModel
+﻿@using web_quanao.Models
 @{
     ViewBag.Title = "Quản lý tài khoản";
     Layout = "~/Views/Shared/_LayoutHome.cshtml";
+    var accountVm = ViewBag.AccountVm as AccountInfoViewModel; // chỉ dùng AccountInfoViewModel
 }
 
 @section Styles{
 <style>
-.manage-wrapper{ min-height:60vh; }
-.manage-card{ max-width:520px; margin:auto; background:#fff; padding:1.75rem 2rem; border-radius:12px; box-shadow:0 6px 20px -6px rgba(0,0,0,.08); }
-.manage-card h2{ font-size:1.35rem; font-weight:600; margin-bottom:1rem; text-align:center; }
-.readonly-field{ background:#f5f5f5; }
+.manage-wrapper{ max-width:620px; margin:auto; }
+.section-card{ background:#fff; border:1px solid #e5e5e5; border-radius:12px; padding:1.25rem 1.5rem; box-shadow:0 4px 14px -4px rgba(0,0,0,.08); margin-bottom:1.3rem; }
+.section-card h3{ font-size:1.05rem; font-weight:600; margin-bottom:.9rem; }
 </style>
 }
 
 <div class="manage-wrapper py-4">
-    <div class="manage-card">
-        <h2>@ViewBag.Title</h2>
-        @if(!string.IsNullOrEmpty(ViewBag.StatusMessage as string)){
-            <div class="alert alert-success text-center">@ViewBag.StatusMessage</div>
-        }
-        @using (Html.BeginForm("Index","Manage",FormMethod.Post, new { @class="js-submit" }))
-        {
+    <h2 class="mb-3">@ViewBag.Title</h2>
+    @if(ViewBag.Msg!=null){ <div class="alert alert-success">@ViewBag.Msg</div> }
+    @if(ViewBag.Err!=null){ <div class="alert alert-danger">@ViewBag.Err</div> }
+
+    <div class="section-card">
+        <h3>Thông tin tài khoản</h3>
+        @using (Html.BeginForm("UpdateAccountInfo","Manage",FormMethod.Post)){
             @Html.AntiForgeryToken()
-            <div class="form-floating mb-3">
-                @Html.TextBoxFor(m => m.Email, new { @class="form-control readonly-field", placeholder="Email", @readonly="readonly" })
-                @Html.LabelFor(m => m.Email)
+            <div class="mb-3">
+                <label class="form-label">Email</label>
+                <input type="text" name="Email" value="@accountVm?.Email" class="form-control" readonly />
             </div>
-            <div class="form-floating mb-3">
-                @Html.TextBoxFor(m => m.ShippingAddress, new { @class="form-control", placeholder="Địa chỉ nhận hàng" })
-                @Html.LabelFor(m => m.ShippingAddress)
-                @Html.ValidationMessageFor(m => m.ShippingAddress, null, new { @class="text-danger small" })
+            <div class="mb-3">
+                <label class="form-label">Địa chỉ nhận hàng</label>
+                <input type="text" name="ShippingAddress" value="@accountVm?.ShippingAddress" class="form-control" placeholder="Địa chỉ nhận hàng" />
             </div>
-            <div class="d-flex justify-content-center">
-                <button type="submit" class="btn btn-primary px-4" data-loading>Cập nhật</button>
-            </div>
+            <button class="btn btn-primary">Cập nhật</button>
         }
-        <div class="text-center mt-3 small text-muted">Email không thể thay đổi. Nếu cần hỗ trợ hãy liên hệ quản trị.</div>
+    </div>
+
+    <div class="section-card">
+        <h3>Đổi mật khẩu</h3>
+        @using (Html.BeginForm("ChangePassword","Manage",FormMethod.Post)){
+            @Html.AntiForgeryToken()
+            <div class="mb-3">
+                <label class="form-label">Mật khẩu hiện tại</label>
+                <input type="password" name="CurrentPassword" class="form-control" />
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Mật khẩu mới</label>
+                <input type="password" name="NewPassword" class="form-control" />
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Xác nhận mật khẩu mới</label>
+                <input type="password" name="ConfirmNewPassword" class="form-control" />
+            </div>
+            <button class="btn btn-warning">Đổi mật khẩu</button>
+        }
+        <p class="text-muted small mt-2 mb-0">Mật khẩu tối thiểu 6 ký tự, nên chứa chữ hoa, chữ thường, số và ký tự đặc biệt.</p>
     </div>
 </div>
 
-@section Scripts{ }
+@section Scripts{ }@section Scripts{ }

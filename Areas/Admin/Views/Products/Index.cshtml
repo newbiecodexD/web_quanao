@@ -1,49 +1,65 @@
-@model IEnumerable<web_quanao.Models.Product>
+﻿@model IEnumerable<web_quanao.Models.Product>
 @using web_quanao.Helpers
 @{
-    ViewBag.Title = "Products";
+    ViewBag.Title = "Sản phẩm";
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
 @section Toolbar{
     <div class="d-flex gap-2">
-        <a class="btn btn-outline-primary js-fetch" href="@Url.Action("Index")"><i class="bi bi-download"></i> N?p danh s�ch</a>
+        <a class="btn btn-outline-primary js-fetch" href="@Url.Action("Index")"><i class="bi bi-download"></i> Nạp danh sách</a>
         <form method="get" class="d-flex align-items-center gap-2" action="@Url.Action("Index")">
-            <input type="text" name="q" value="@Request["q"]" class="form-control form-control-sm" placeholder="T�m theo t�n" />
+            <input type="text" name="q" value="@Request["q"]" class="form-control form-control-sm" placeholder="Tìm theo tên" />
             <select name="sort" class="form-select form-select-sm">
-                <option value="id_desc" selected>M?i nh?t</option>
-                <option value="id_asc">C? nh?t</option>
-                <option value="name">T�n</option>
-                <option value="price">Gi�</option>
+                <option value="id_desc" selected>Mới nhất</option>
+                <option value="id_asc">Cũ nhất</option>
+                <option value="name">Tên</option>
+                <option value="price">Giá</option>
             </select>
-            <button class="btn btn-sm btn-secondary" type="submit" data-loading>l?c</button>
+            <button class="btn btn-sm btn-secondary" type="submit" data-loading>Lọc</button>
         </form>
     </div>
 }
-<p><a class="btn btn-primary" href="@Url.Action("Create")">Th�m s?n ph?m</a></p>
+<p><a class="btn btn-primary" href="@Url.Action("Create")">Thêm sản phẩm</a></p>
+
 <table class="table table-bordered table-striped align-middle">
-    <thead><tr><th style="width:64px;">?nh</th><th>Id</th><th>T�n</th><th>Danh m?c</th><th>Gi�</th><th></th></tr></thead>
-    <tbody>
-    @foreach (var p in Model){
-        var img = p.ProductImages != null && p.ProductImages.Any() ?
-            p.ProductImages.OrderByDescending(i=>i.IsPrimary).ThenBy(i=>i.ImageId).FirstOrDefault().ImageUrl : null;
+    <thead>
         <tr>
-            <td>
-                @if(!string.IsNullOrEmpty(img)){
-                    <img src="@Url.Content(img)" alt="@p.Name" style="width:56px;height:56px;object-fit:cover;border-radius:4px;" />
-                } else {
-                    <span class="text-muted small">(No image)</span>
-                }
-            </td>
-            <td>@p.ProductId</td>
-            <td>@p.Name</td>
-            <td>@p.Category?.Name</td>
-            <td>@Html.Price(p.Price)</td>
-            <td>
-                <a class="btn btn-sm btn-secondary" href="@Url.Action("Edit", new { id = p.ProductId })">S?a</a>
-                <a class="btn btn-sm btn-info" href="@Url.Action("Details", new { id = p.ProductId })">Chi ti?t</a>
-                <a class="btn btn-sm btn-danger" href="@Url.Action("Delete", new { id = p.ProductId })">X�a</a>
-            </td>
+            <th style="width:64px;">Ảnh</th>
+            <th>Id</th>
+            <th>Tên</th>
+            <th>Danh mục</th>
+            <th>Giá</th>
+            <th></th>
         </tr>
-    }
+    </thead>
+    <tbody>
+        @foreach (var p in Model)
+        {
+            var img = p.ProductImages != null && p.ProductImages.Any()
+                ? p.ProductImages.OrderByDescending(i => i.IsPrimary).ThenBy(i => i.ImageId).FirstOrDefault().ImageUrl
+                : null;
+
+            <tr>
+                <td>
+                    @if (!string.IsNullOrEmpty(img))
+                    {
+                        <img src="@Url.Content(img)" alt="@p.Name" style="width:56px;height:56px;object-fit:cover;border-radius:4px;" />
+                    }
+                    else
+                    {
+                        <span class="text-muted small">(Không ảnh)</span>
+                    }
+                </td>
+                <td>@p.ProductId</td>
+                <td>@p.Name</td>
+                <td>@p.Category?.Name</td>
+                <td>@Html.Price(p.Price)</td>
+                <td>
+                    <a class="btn btn-sm btn-secondary" href="@Url.Action("Edit", new { id = p.ProductId })">Sửa</a>
+                    <a class="btn btn-sm btn-info" href="@Url.Action("Details", new { id = p.ProductId })">Chi tiết</a>
+                    <a class="btn btn-sm btn-danger" href="@Url.Action("Delete", new { id = p.ProductId })">Xóa</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
