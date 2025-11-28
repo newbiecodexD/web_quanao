@@ -4,7 +4,7 @@
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
 <h2 class="mb-3">Danh sách đơn hàng</h2>
-<table class="table table-bordered table-sm align-middle">
+<table class="table table-bordered table-sm align-middle" id="ordersTable">
     <thead class="table-light">
         <tr>
             <th>ID</th>
@@ -17,18 +17,44 @@
     </thead>
     <tbody>
     @foreach(var o in Model){
-        <tr>
+        <tr data-id="@o.OrderId">
             <td>@o.OrderId</td>
             <td>@o.OrderDate.ToString("dd/MM/yyyy HH:mm")</td>
             <td>@(o.CustomerName ?? "-")</td>
-            <td>@o.Status</td>
-            <td>@String.Format("{0:N0} VND", o.TotalAmount)</td>
             <td>
-                <a class="btn btn-sm btn-info" href="@Url.Action("Details","Orders", new { area="Admin", id = o.OrderId })">Chi tiết</a>
-                <a class="btn btn-sm btn-secondary" href="@Url.Action("Edit","Orders", new { area="Admin", id = o.OrderId })">Sửa</a>
-                <a class="btn btn-sm btn-danger" href="@Url.Action("Delete","Orders", new { area="Admin", id = o.OrderId })" onclick="return confirm('Xóa đơn hàng?');">Xóa</a>
+                <select class="form-select form-select-sm order-status" data-current="@o.Status">
+                    <option value="Pending" @(o.Status=="Pending"?"selected":"")>Pending</option>
+                    <option value="Paid" @(o.Status=="Paid"?"selected":"")>Paid</option>
+                </select>
             </td>
+            <td>@String.Format("{0:N0} VND", o.TotalAmount)</td>
+            <td><a class="btn btn-sm btn-info" href="@Url.Action("Details","Orders", new { area="Admin", id = o.OrderId })" data-loading>Chi tiết</a></td>
         </tr>
     }
     </tbody>
 </table>
+@section Scripts{
+<script>
+(function(){
+    function ensureTokenForm(){ if(!document.querySelector('#__af')){ var f=document.createElement('form'); f.id='__af'; f.innerHTML='@Html.AntiForgeryToken()'; f.style.display='none'; document.body.appendChild(f);} }
+    function getToken(){ ensureTokenForm(); var el=document.querySelector('#__af input[name="__RequestVerificationToken"]'); return el?el.value:''; }
+    document.addEventListener('change', function(e){
+        var sel = e.target.closest('.order-status'); if(!sel) return;
+        var tr = sel.closest('tr'); var id = parseInt(tr.getAttribute('data-id'))||0; var newStatus = sel.value; var oldStatus = sel.getAttribute('data-current');
+        if(!id || !newStatus || newStatus===oldStatus) return;
+        if(!confirm('Xác nhận chuyển trạng thái đơn #' + id + ' sang "' + newStatus + '"?')){ sel.value = oldStatus; return; }
+        var token = getToken(); sel.disabled = true;
+        var body = '__RequestVerificationToken=' + encodeURIComponent(token) + '&id=' + encodeURIComponent(id) + '&status=' + encodeURIComponent(newStatus);
+        fetch('@Url.Action("UpdateStatus","Orders", new { area="Admin" })', {
+            method:'POST', headers:{ 'Content-Type':'application/x-www-form-urlencoded; charset=UTF-8' }, body: body
+        }).then(function(r){ if(!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+        .then(function(res){
+            if(res && res.success){ sel.setAttribute('data-current', res.status); alert('Đã cập nhật trạng thái đơn #' + id + ' thành ' + res.status); }
+            else { alert((res && res.message) || 'Không thể cập nhật'); sel.value = oldStatus; }
+        })
+        .catch(function(err){ console.error(err); alert('Lỗi kết nối server'); sel.value = oldStatus; })
+        .finally(function(){ sel.disabled=false; });
+    });
+})();
+</script>
+}

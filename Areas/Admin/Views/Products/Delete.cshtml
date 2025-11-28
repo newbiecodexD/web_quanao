@@ -1,12 +1,12 @@
-@model web_quanao.Models.Product
+﻿@model web_quanao.Models.Product
 @{
-    ViewBag.Title = "X�a s?n ph?m";
+    ViewBag.Title = "Xóa sản phẩm";
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
-<h5>B?n ch?c ch?n mu?n x�a s?n ph?m: @Model.Name?</h5>
+<h5>Bạn chắc chắn muốn xóa sản phẩm: @Model.Name?</h5>
 @using (Html.BeginForm("Delete", "Products", FormMethod.Post, new { @class="js-submit" })){
     @Html.AntiForgeryToken()
     @Html.HiddenFor(m => m.ProductId)
-    <a class="btn btn-secondary" href="@Url.Action("Index")" data-loading>H?y</a>
-    <button class="btn btn-danger" type="submit" data-loading>X�a</button>
+    <a class="btn btn-secondary" href="@Url.Action("Index")" data-loading>Hủy</a>
+    <button class="btn btn-danger" type="submit" data-loading>Xóa</button>
 }

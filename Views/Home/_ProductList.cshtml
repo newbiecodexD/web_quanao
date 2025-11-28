@@ -1,4 +1,12 @@
 ﻿@model IEnumerable<web_quanao.Models.ProductViewModel>
+<style>
+/* Tăng nhẹ chiều cao thẻ sản phẩm */
+.product-card-inner{display:flex;flex-direction:column;height:400px;overflow:hidden;}
+.product-card-inner .card-img-top{height:180px;object-fit:cover;border-top-left-radius:.5rem;border-top-right-radius:.5rem;}
+.product-card-inner .card-body{overflow:hidden;}
+.product-card-inner .card-body .card-text.small{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;text-overflow:ellipsis;}
+.product-card-inner .card-footer{margin-top:auto;}
+</style>
 <div class="row">
 @if (Model != null && Model.Any()){
     foreach (var product in Model){

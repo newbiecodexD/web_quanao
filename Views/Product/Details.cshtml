@@ -1,23 +1,22 @@
-@model web_quanao.Models.Product
+﻿@model web_quanao.Models.Product
 @{
-    ViewBag.Title = Model?.Name ?? "Chi ti?t s?n ph?m";
+    ViewBag.Title = (Model != null ? Model.Name : "Chi tiết sản phẩm");
     Layout = "~/Views/Shared/_LayoutHome.cshtml";
 }
-
 @section Styles{
     <style>
         .product-gallery img{ max-width:100%; height:auto; display:block; border-radius:6px; }
-        .thumbs img{ width:64px; height:64px; object-fit:cover; border-radius:4px; cursor:pointer; }
+        .thumbs img{ width:64px; height:64px; object-fit:cover; border-radius:4px; cursor:pointer; transition:opacity .2s; }
+        .thumbs img:hover{ opacity:.75; }
     </style>
 }
-
 <div class="container py-4">
     <div class="row g-4">
         <div class="col-md-6">
             <div class="product-gallery">
-                @{ var mainImg = Model?.ProductImages?.OrderByDescending(i=>i.IsPrimary).ThenBy(i=>i.ImageId).FirstOrDefault()?.ImageUrl; }
-                <img id="mainImage" src="@Url.Content(mainImg ?? "~/Content/Images/noimage.png")" alt="@Model.Name" />
-                @if (Model?.ProductImages != null && Model.ProductImages.Any()){
+                @{ var mainImg = (Model != null ? Model.ProductImages.OrderByDescending(i=>i.IsPrimary).ThenBy(i=>i.ImageId).Select(i=>i.ImageUrl).FirstOrDefault() : null); }
+                <img id="mainImage" src="@Url.Content(mainImg ?? "~/Content/Images/noimage.png")" alt="@(Model!=null?Model.Name:"")" />
+                @if (Model != null && Model.ProductImages != null && Model.ProductImages.Any()){
                     <div class="mt-3 d-flex gap-2 thumbs">
                         @foreach (var img in Model.ProductImages){
                             <img src="@Url.Content(img.ImageUrl)" alt="thumb" data-src="@Url.Content(img.ImageUrl)" />
@@ -27,13 +26,13 @@
             </div>
         </div>
         <div class="col-md-6">
-            <h1 class="h3">@Model.Name</h1>
-            <div class="text-muted">Danh m?c: @Model.Category?.Name</div>
-            <div class="h4 mt-2">@Model.Price.ToString("N0")?</div>
-            <p class="mt-3">@Model.Description</p>
+            <h1 class="h3">@(Model!=null?Model.Name:"")</h1>
+            <div class="text-muted">Danh mục: @(Model!=null && Model.Category!=null ? Model.Category.Name : "-")</div>
+            <div class="h4 mt-2">@(Model!=null? Model.Price.ToString("N0") : "0") đ</div>
+            <p class="mt-3">@(Model!=null? Model.Description : "Không có mô tả.")</p>
             <div class="mt-3">
-                @if (Model.ProductSizes != null && Model.ProductSizes.Any()){
-                    <label class="form-label">K�ch c?</label>
+                @if (Model != null && Model.ProductSizes != null && Model.ProductSizes.Any()){
+                    <label class="form-label">Kích cỡ</label>
                     <div class="d-flex flex-wrap gap-2">
                         @foreach (var s in Model.ProductSizes.Select(ps=>ps.Size)){
                             <span class="badge bg-light text-dark border">@s.SizeName</span>
@@ -42,19 +41,17 @@
                 }
             </div>
             <div class="mt-4">
-                <button class="btn btn-dark add-to-cart" data-productid="@Model.ProductId" data-name="@Model.Name" data-price="@Model.Price">Th�m v�o gi? h�ng</button>
+                @if(Model!=null){
+                    <button class="btn btn-dark add-to-cart" data-productid="@Model.ProductId" data-name="@Model.Name" data-price="@Model.Price">Thêm vào giỏ hàng</button>
+                }
             </div>
         </div>
     </div>
 </div>
-
 @section Scripts{
 <script>
 (function(){
-    $(document).on('click', '.thumbs img', function(){
-        var src = $(this).data('src');
-        if(src){ $('#mainImage').attr('src', src); }
-    });
+    $(document).on('click', '.thumbs img', function(){ var src=$(this).data('src'); if(src){ $('#mainImage').attr('src', src); } });
 })();
 </script>
 }

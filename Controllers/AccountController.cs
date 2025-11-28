@@ -8,11 +8,11 @@ using System.Web.Mvc;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
-using web_quanao.Infrastructure.Data; // changed from Models
-using web_quanao.Models; // add back for view models
+using web_quanao.Infrastructure.Data;
+using web_quanao.Models;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
-using web_quanao.Services; // in-memory auth store
+using web_quanao.Services;
 
 namespace web_quanao.Controllers
 {
@@ -197,7 +197,7 @@ namespace web_quanao.Controllers
             // Clear both cookie auth and admin session flag
             AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
             Session.Remove("IsAdmin");
-            return RedirectToAction("Login", "Account");
+            return RedirectToAction("Login", "Account", new { area = "" });
         }
 
         [HttpPost]
@@ -206,7 +206,7 @@ namespace web_quanao.Controllers
         {
             AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
             Session.Remove("IsAdmin");
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Index", "Home", new { area = "" });
         }
 
         protected override void Dispose(bool disposing)
@@ -219,7 +219,7 @@ namespace web_quanao.Controllers
         private ActionResult RedirectToLocal(string returnUrl)
         {
             if (Url.IsLocalUrl(returnUrl)) return Redirect(returnUrl);
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Index", "Home", new { area = "" });
         }
         #endregion
     }

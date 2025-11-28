@@ -7,9 +7,11 @@
 
 @section Styles{
 <style>
-.manage-wrapper{ max-width:620px; margin:auto; }
+.manage-wrapper{ max-width:520px; margin:auto; }
 .section-card{ background:#fff; border:1px solid #e5e5e5; border-radius:12px; padding:1.25rem 1.5rem; box-shadow:0 4px 14px -4px rgba(0,0,0,.08); margin-bottom:1.3rem; }
 .section-card h3{ font-size:1.05rem; font-weight:600; margin-bottom:.9rem; }
+.form-row{ display:flex; align-items:center; justify-content:space-between; gap:1rem; }
+.form-row .label{ color:#666; }
 </style>
 }
 
@@ -20,40 +22,35 @@
 
     <div class="section-card">
         <h3>Thông tin tài khoản</h3>
-        @using (Html.BeginForm("UpdateAccountInfo","Manage",FormMethod.Post)){
-            @Html.AntiForgeryToken()
-            <div class="mb-3">
-                <label class="form-label">Email</label>
-                <input type="text" name="Email" value="@accountVm?.Email" class="form-control" readonly />
-            </div>
-            <div class="mb-3">
-                <label class="form-label">Địa chỉ nhận hàng</label>
-                <input type="text" name="ShippingAddress" value="@accountVm?.ShippingAddress" class="form-control" placeholder="Địa chỉ nhận hàng" />
-            </div>
-            <button class="btn btn-primary">Cập nhật</button>
-        }
-    </div>
-
-    <div class="section-card">
-        <h3>Đổi mật khẩu</h3>
-        @using (Html.BeginForm("ChangePassword","Manage",FormMethod.Post)){
-            @Html.AntiForgeryToken()
-            <div class="mb-3">
-                <label class="form-label">Mật khẩu hiện tại</label>
-                <input type="password" name="CurrentPassword" class="form-control" />
-            </div>
-            <div class="mb-3">
-                <label class="form-label">Mật khẩu mới</label>
-                <input type="password" name="NewPassword" class="form-control" />
-            </div>
-            <div class="mb-3">
-                <label class="form-label">Xác nhận mật khẩu mới</label>
-                <input type="password" name="ConfirmNewPassword" class="form-control" />
-            </div>
-            <button class="btn btn-warning">Đổi mật khẩu</button>
-        }
-        <p class="text-muted small mt-2 mb-0">Mật khẩu tối thiểu 6 ký tự, nên chứa chữ hoa, chữ thường, số và ký tự đặc biệt.</p>
+        <div class="form-row mb-3">
+            <div class="label">Email</div>
+            <div class="flex-grow-1 text-end">@(accountVm != null ? accountVm.Email : "")</div>
+        </div>
+        <div class="form-row mb-2">
+            <div class="label">Mật khẩu</div>
+            <div class="flex-grow-1 text-end">********</div>
+        </div>
+        <button class="btn btn-warning mt-2" type="button" data-bs-toggle="collapse" data-bs-target="#changePwdPanel" aria-expanded="false" aria-controls="changePwdPanel">Đổi mật khẩu</button>
+        <div class="collapse mt-3" id="changePwdPanel">
+            @using (Html.BeginForm("ChangePassword","Manage",FormMethod.Post)){
+                @Html.AntiForgeryToken()
+                <div class="mb-3">
+                    <label class="form-label">Mật khẩu hiện tại</label>
+                    <input type="password" name="CurrentPassword" class="form-control" />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Mật khẩu mới</label>
+                    <input type="password" name="NewPassword" class="form-control" />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Xác nhận mật khẩu mới</label>
+                    <input type="password" name="ConfirmNewPassword" class="form-control" />
+                </div>
+                <button class="btn btn-primary">Lưu mật khẩu</button>
+            }
+            <p class="text-muted small mt-2 mb-0">Mật khẩu tối thiểu 6 ký tự, nên chứa chữ hoa, chữ thường, số và ký tự đặc biệt.</p>
+        </div>
     </div>
 </div>
 
-@section Scripts{ }@section Scripts{ }
+@section Scripts{ }

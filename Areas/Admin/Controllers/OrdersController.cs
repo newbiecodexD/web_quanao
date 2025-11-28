@@ -64,24 +64,15 @@ namespace web_quanao.Areas.Admin.Controllers
             ViewBag.Items = items;
             return View(order);
         }
-
-        public ActionResult Delete(int id)
-        {
-            if (!IsAdmin()) return RedirectToAction("Login", "Account", new { area = "" });
-            var order = _db.Database.SqlQuery<AdminOrderRow>("SELECT o.OrderId, o.OrderDate, o.TotalAmount, o.Status, u.FullName AS CustomerName FROM OrderPro o LEFT JOIN Users u ON o.CustomerId = u.UserId WHERE o.OrderId = @p0", id).FirstOrDefault();
-            if (order == null) return HttpNotFound();
-            return View(order);
-        }
-
-        [HttpPost, ActionName("Delete")]
+        [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int id)
+        public ActionResult UpdateStatus(int id, string status)
         {
-            if (!IsAdmin()) return RedirectToAction("Login", "Account", new { area = "" });
-            _db.Database.ExecuteSqlCommand("DELETE FROM OrderDetail WHERE OrderId=@p0", id);
-            _db.Database.ExecuteSqlCommand("DELETE FROM OrderPro WHERE OrderId=@p0", id);
-            TempData["Msg"] = "?ã xóa ??n hàng";
-            return RedirectToAction("Index");
+            if (!IsAdmin()) return Json(new { success = false, message = "Không có quy?n" });
+            status = (status ?? "").Trim();
+            if (status != "Pending" && status != "Paid") return Json(new { success = false, message = "Tr?ng thái không h?p l?" });
+            var rows = _db.Database.ExecuteSqlCommand("UPDATE OrderPro SET Status=@p0 WHERE OrderId=@p1", status, id);
+            return Json(new { success = rows > 0, status });
         }
     }
 }

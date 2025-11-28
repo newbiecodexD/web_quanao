@@ -30,13 +30,33 @@ namespace web_quanao.Areas.Admin.Controllers
             _uow = new UnitOfWork(_db);
         }
 
-        public ActionResult Index()
+        // Index with filtering & sorting
+        public ActionResult Index(string q, string sort = "id_desc", int? categoryId = null, decimal? minPrice = null, decimal? maxPrice = null)
         {
-            var list = _products.Query()
+            var qry = _products.Query()
                 .Include(x => x.Category)
-                .Include(x => x.ProductImages)
-                .OrderByDescending(x => x.ProductId)
-                .ToList();
+                .Include(x => x.ProductImages);
+
+            if (!string.IsNullOrWhiteSpace(q))
+            {
+                var term = q.Trim();
+                qry = qry.Where(x => x.Name.Contains(term) || x.Description.Contains(term));
+            }
+            if (categoryId.HasValue) qry = qry.Where(x => x.CategoryId == categoryId.Value);
+            if (minPrice.HasValue) qry = qry.Where(x => x.Price >= minPrice.Value);
+            if (maxPrice.HasValue) qry = qry.Where(x => x.Price <= maxPrice.Value);
+
+            switch (sort)
+            {
+                case "id_asc": qry = qry.OrderBy(x => x.ProductId); break;
+                case "name": qry = qry.OrderBy(x => x.Name); break;
+                case "price": qry = qry.OrderBy(x => x.Price); break;
+                case "price_desc": qry = qry.OrderByDescending(x => x.Price); break;
+                default: qry = qry.OrderByDescending(x => x.ProductId); break; // id_desc
+            }
+            var list = qry.ToList();
+            ViewBag.Categories = _categories.GetAll().Select(c => new SelectListItem{ Value = c.CategoryId.ToString(), Text = c.Name, Selected = (categoryId.HasValue && categoryId.Value==c.CategoryId) });
+            ViewBag.Query = q; ViewBag.Sort = sort; ViewBag.MinPrice = minPrice; ViewBag.MaxPrice = maxPrice; ViewBag.CategoryId = categoryId;
             return View(list);
         }
 
@@ -89,6 +109,7 @@ namespace web_quanao.Areas.Admin.Controllers
             }
             _uow.Complete();
 
+            // Save uploaded files
             var files = Request?.Files;
             if (files != null && files.Count > 0)
             {
@@ -100,6 +121,18 @@ namespace web_quanao.Areas.Admin.Controllers
                         var url = SaveImage(f);
                         _images.Add(new ProductImage { ProductId = entity.ProductId, ImageUrl = url, IsPrimary = i == 0 });
                     }
+                }
+                _uow.Complete();
+            }
+            // Save link images from ImageUrls
+            if (vm.ImageUrls != null)
+            {
+                int idx = 0;
+                foreach (var link in vm.ImageUrls.Where(x => !string.IsNullOrWhiteSpace(x)))
+                {
+                    var clean = link.Trim();
+                    _images.Add(new ProductImage { ProductId = entity.ProductId, ImageUrl = clean, IsPrimary = (files == null || files.Count == 0) ? (idx == 0) : false });
+                    idx++;
                 }
                 _uow.Complete();
             }
@@ -173,6 +206,15 @@ namespace web_quanao.Areas.Admin.Controllers
                         var url = SaveImage(f);
                         _images.Add(new ProductImage { ProductId = p.ProductId, ImageUrl = url, IsPrimary = false });
                     }
+                }
+                _uow.Complete();
+            }
+            if (vm.ImageUrls != null)
+            {
+                foreach (var link in vm.ImageUrls.Where(x => !string.IsNullOrWhiteSpace(x)))
+                {
+                    var clean = link.Trim();
+                    _images.Add(new ProductImage { ProductId = p.ProductId, ImageUrl = clean, IsPrimary = false });
                 }
                 _uow.Complete();
             }

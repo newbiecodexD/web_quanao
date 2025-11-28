@@ -3,24 +3,47 @@
 @{
     ViewBag.Title = "Sản phẩm";
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+    var q = ViewBag.Query as string;
+    var sort = ViewBag.Sort as string ?? "id_desc";
+    var minPrice = ViewBag.MinPrice as decimal?;
+    var maxPrice = ViewBag.MaxPrice as decimal?;
+    var categoryId = ViewBag.CategoryId as int?;
+    var categories = ViewBag.Categories as IEnumerable<SelectListItem>;
 }
 @section Toolbar{
-    <div class="d-flex gap-2">
-        <a class="btn btn-outline-primary js-fetch" href="@Url.Action("Index")"><i class="bi bi-download"></i> Nạp danh sách</a>
-        <form method="get" class="d-flex align-items-center gap-2" action="@Url.Action("Index")">
-            <input type="text" name="q" value="@Request["q"]" class="form-control form-control-sm" placeholder="Tìm theo tên" />
-            <select name="sort" class="form-select form-select-sm">
-                <option value="id_desc" selected>Mới nhất</option>
-                <option value="id_asc">Cũ nhất</option>
-                <option value="name">Tên</option>
-                <option value="price">Giá</option>
-            </select>
-            <button class="btn btn-sm btn-secondary" type="submit" data-loading>Lọc</button>
+    <div class="d-flex gap-2 flex-wrap align-items-end">
+        <form method="get" class="row g-2 align-items-end" action="@Url.Action("Index")">
+            <div class="col-auto">
+                <input type="text" name="q" value="@q" class="form-control form-control-sm" placeholder="Từ khóa" />
+            </div>
+            <div class="col-auto">
+                @Html.DropDownList("categoryId", categories, "-- Danh mục --", new { @class="form-select form-select-sm" })
+            </div>
+            <div class="col-auto">
+                <input type="number" name="minPrice" value="@(minPrice?.ToString() ?? "")" class="form-control form-control-sm" placeholder="Giá từ" min="0" step="1000" />
+            </div>
+            <div class="col-auto">
+                <input type="number" name="maxPrice" value="@(maxPrice?.ToString() ?? "")" class="form-control form-control-sm" placeholder="Giá đến" min="0" step="1000" />
+            </div>
+            <div class="col-auto">
+                <select name="sort" class="form-select form-select-sm">
+                    <option value="id_desc" @(sort=="id_desc"?"selected":"")>Mới nhất</option>
+                    <option value="id_asc" @(sort=="id_asc"?"selected":"")>Cũ nhất</option>
+                    <option value="name" @(sort=="name"?"selected":"")>Tên</option>
+                    <option value="price" @(sort=="price"?"selected":"")>Giá tăng</option>
+                    <option value="price_desc" @(sort=="price_desc"?"selected":"")>Giá giảm</option>
+                </select>
+            </div>
+            <div class="col-auto">
+                <button class="btn btn-sm btn-secondary" type="submit" data-loading>Lọc</button>
+            </div>
+            <div class="col-auto">
+                <a href="@Url.Action("Index")" class="btn btn-sm btn-outline-dark" data-loading>Reset</a>
+            </div>
         </form>
     </div>
 }
-<p><a class="btn btn-primary" href="@Url.Action("Create")">Thêm sản phẩm</a></p>
-
+<p><a class="btn btn-primary" href="@Url.Action("Create")" data-loading>Thêm sản phẩm</a></p>
 <table class="table table-bordered table-striped align-middle">
     <thead>
         <tr>
@@ -35,31 +58,26 @@
     <tbody>
         @foreach (var p in Model)
         {
-            var img = p.ProductImages != null && p.ProductImages.Any()
-                ? p.ProductImages.OrderByDescending(i => i.IsPrimary).ThenBy(i => i.ImageId).FirstOrDefault().ImageUrl
-                : null;
-
+            var img = p.ProductImages != null && p.ProductImages.Any() ? p.ProductImages.OrderByDescending(i => i.IsPrimary).ThenBy(i => i.ImageId).FirstOrDefault().ImageUrl : null;
             <tr>
                 <td>
                     @if (!string.IsNullOrEmpty(img))
-                    {
-                        <img src="@Url.Content(img)" alt="@p.Name" style="width:56px;height:56px;object-fit:cover;border-radius:4px;" />
-                    }
-                    else
-                    {
-                        <span class="text-muted small">(Không ảnh)</span>
-                    }
+                    { <img src="@Url.Content(img)" alt="@p.Name" style="width:56px;height:56px;object-fit:cover;border-radius:4px;" /> }
+                    else { <span class="text-muted small">(Không ảnh)</span> }
                 </td>
                 <td>@p.ProductId</td>
                 <td>@p.Name</td>
-                <td>@p.Category?.Name</td>
+                <td>@(p.Category != null ? p.Category.Name : "-")</td>
                 <td>@Html.Price(p.Price)</td>
                 <td>
-                    <a class="btn btn-sm btn-secondary" href="@Url.Action("Edit", new { id = p.ProductId })">Sửa</a>
-                    <a class="btn btn-sm btn-info" href="@Url.Action("Details", new { id = p.ProductId })">Chi tiết</a>
-                    <a class="btn btn-sm btn-danger" href="@Url.Action("Delete", new { id = p.ProductId })">Xóa</a>
+                    <a class="btn btn-sm btn-secondary" href="@Url.Action("Edit", new { id = p.ProductId })" data-loading>Sửa</a>
+                    <a class="btn btn-sm btn-info" href="@Url.Action("Details", new { id = p.ProductId })" data-loading>Chi tiết</a>
+                    <a class="btn btn-sm btn-danger" href="@Url.Action("Delete", new { id = p.ProductId })" data-loading>Xóa</a>
                 </td>
             </tr>
         }
     </tbody>
 </table>
+@if(!Model.Any()){
+    <div class="alert alert-info">Không có sản phẩm phù hợp với bộ lọc.</div>
+}

@@ -1,15 +1,12 @@
-﻿@model IEnumerable<web_quanao.Models.Order>
+﻿@model IEnumerable<dynamic>
 @{
     ViewBag.Title = "Lịch sử mua hàng";
     Layout = "~/Views/Shared/_LayoutCart.cshtml";
 }
-
 <section class="container py-4">
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <h1 class="mb-0">Lịch sử mua hàng</h1>
-        <a href="@Url.Action("Index","Cart")" class="btn btn-outline-secondary">
-            <i class="bi bi-arrow-left"></i> Quay về giỏ hàng
-        </a>
+        <h1 class="mb-0">@ViewBag.Title</h1>
+        <a href="@Url.Action("Index","Cart")" class="btn btn-outline-secondary"><i class="bi bi-arrow-left"></i> Quay về giỏ hàng</a>
     </div>
 
     @if (Model == null || !Model.Any())
@@ -21,42 +18,30 @@
         <div class="row g-3">
             @foreach (var o in Model)
             {
+                var total = (decimal)(o.TotalAmount);
                 <div class="col-12">
                     <div class="card shadow-sm">
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-center">
                                 <div>
                                     <div class="fw-bold">Mã đơn: @o.OrderId</div>
-                                    <div class="text-muted small">
-                                        Ngày: @(o.CreatedAt?.ToString("dd/MM/yyyy HH:mm") ?? "-")
-                                        | Trạng thái: @(o.Status ?? "-")
-                                    </div>
+                                    <div class="text-muted small">Ngày: @(((DateTime)o.OrderDate).ToString("dd/MM/yyyy HH:mm")) | Trạng thái: @o.Status</div>
                                 </div>
-                                <div class="text-end">
-                                    <div class="fw-bold">Tổng: @((o.TotalAmount ?? 0m).ToString("N0")) ₫</div>
-                                </div>
+                                <div class="text-end"><div class="fw-bold">Tổng: @total.ToString("N0") ₫</div></div>
                             </div>
-                            <hr />
-                            @if (o.OrderItems != null && o.OrderItems.Any())
+                            @if (o.Items != null && o.Items.Count > 0)
                             {
+                                <hr />
                                 <ul class="list-group list-group-flush">
-                                    @foreach (var it in o.OrderItems)
+                                    @foreach (var it in o.Items)
                                     {
-                                        var line = (it.Price * it.Quantity);
+                                        var line = (decimal)it.LineTotal;
                                         <li class="list-group-item d-flex justify-content-between">
-                                            <span>
-                                                @(it.Product != null ? it.Product.Name : "Sản phẩm")
-                                                @if (it.Size != null) { <text>(@it.Size.SizeName)</text>; }
-                                                x @it.Quantity
-                                            </span>
+                                            <span>@it.ProductName x @it.Quantity</span>
                                             <span>@line.ToString("N0") ₫</span>
                                         </li>
                                     }
                                 </ul>
-                            }
-                            else
-                            {
-                                <div class="text-muted small">Không có chi tiết sản phẩm.</div>
                             }
                         </div>
                     </div>

@@ -11,7 +11,7 @@
             <th style="width:70px;">ID</th>
             <th>Email</th>
             <th style="width:140px;">Vai trò</th>
-            <th style="width:120px;">Sửa</th>
+            
         </tr>
     </thead>
     <tbody>
@@ -20,9 +20,7 @@
             <td>@u.UserId</td>
             <td>@u.Email</td>
             <td>@u.Role</td>
-            <td>
-                <a class="btn btn-sm btn-outline-primary" href="@Url.Action("Edit", new { id = u.UserId })" data-loading>Đổi vai trò</a>
-            </td>
+            
         </tr>
     }
     </tbody>

@@ -23,12 +23,14 @@ namespace web_quanao.ViewModels
         public int CategoryId { get; set; }
 
         [Required]
-        [RegularExpression("^(Nam|Nu|Unisex)$", ErrorMessage = "Giới tính không phù hợp ")] 
+        [RegularExpression("^(Nam|Nữ|Nu|Unisex)$", ErrorMessage = "Giới tính không phù hợp ")]
         public string Gender { get; set; }
 
         public IEnumerable<SelectListItem> Categories { get; set; }
         public IEnumerable<SizeStockItem> Sizes { get; set; }
         public IEnumerable<string> ExistingImages { get; set; }
+        // New: allow entering image URLs
+        public List<string> ImageUrls { get; set; } = new List<string>();
 
         public class SizeStockItem
         {
